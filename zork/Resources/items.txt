@@ -1,0 +1,12 @@
+Bed;It looks like it can be broken...;1;1;19;true;This bed is broken.;2
+Spring;It looks like it can be used to open some padlocks...;19;3;20;true;Looks like I can use it to unlock a padlock...;
+Pipe;This item can be used to attack;1;0;21;false
+Painting1;It seems that I can move this painting;3;2;22;true;Очищающее пламя - Вергвоктре \n The purifying flame - Vergvoktre
+Painting2;It seems that I can move this painting;3;2;23;true;Untitled 1984 - Zdzisław Beksiński
+Painting1;It seems that I can move this painting;4;2;24;true;Владимир Чебаков - Бесконечное утро \n Vladimir Chebakov - Endless Morning
+Painting2;It seems that I can move this painting;4;2;25;true;Dos viejos comiendo sopa - Francisco de Goya \n Two old ones eating soup - Francisco de Goya;
+Window;The window is covered with bars and it seems impossible to get out. \n You notice you're in the middle of nowhere, in some lost forest in Russia...;4;0;26;false
+Blackboard;There's some kind of writing in cyrillic on it...;5;0;27;true;Так как вы совсем идиоты, я оставляю пароль написанным: 9821
+Desktop;It looks like I need a key to open the drawer...;5;0;28;false
+Table;It's a pretty old table, looks expensive.;15;0;29;false
+Padlock;It looks you need something to unlock;0;6;30;false;"";20

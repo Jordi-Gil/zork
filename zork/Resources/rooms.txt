@@ -1,0 +1,18 @@
+Grimy Room (Spawn);Lore Ipsum;Lore Ipsum;1
+Corridor;Lore Ipsum;Lore Ipsum;2
+Central Corridor North;Lore Ipsum;Lore Ipsum;3
+North Corridor;Lore Ipsum;Lore Ipsum;4
+Office;Lore Ipsum;Lore Ipsum;5
+Staff Room;Lore Ipsum;Lore Ipsum;6
+East Wing;Lore Ipsum;Lore Ipsum;7
+Clock Corridor;Lore Ipsum;Lore Ipsum;8
+Living Room;Lore Ipsum;Lore Ipsum;9
+West Wing;Lore Ipsum;Lore Ipsum;10
+Bathroom (Morgue);Lore Ipsum;Lore Ipsum;11
+Guest Room;Lore Ipsum;Lore Ipsum;12
+Main Corridor;Lore Ipsum;Lore Ipsum;13
+Central Corridor South;Lore Ipsum;Lore Ipsum;14
+Dinning Room;Lore Ipsum;Lore Ipsum;15
+Security Room;Lore Ipsum;Lore Ipsum;16
+Secret Room (Armory);Lore Ipsum;Lore Ipsum;17
+Kitchen;Lore Ipsum;Lorep Ipsum;18
