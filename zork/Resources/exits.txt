@@ -1,18 +1,19 @@
-south;north;Rusty door;1;2;false;true;false
-east;west;Corridor intersection;2;3;true;false;false
-north;west;Corridor intersection;3;4;true;false;false
-south;north-east;Solid door;3;9;false;true;true
-north-west;east;Door;9;10;false;true;false
-south-west;east;Iron door;9;11;false;true;true
-south-east;west;Door;9;8;false;true;false
-south;north;Big door;9;12;false;true;false
-north;south;Fake Wall;10;17;false;true;true
-north;south;Glass Door;6;5;false;true;true
-east;north-west;Security Door;6;7;false;true;true
-east;south-west;Door;15;7;false;true;false
-south;north;Arc;15;18;true;false;false
-north-west;east;Door;15;8;false;true;false
-south-west;north-west;Door;15;14;false;true;false
-north-east;south;Door;13;16;false;true;false
-north;south;Corridor intersection;13;14;true;false;false
-north-west;west;Door;13;12;false;true;false
+south;north;Rusty door;1;2;false;true;false;39;0;false
+east;west;Corridor intersection;2;3;true;false;false;40;3;false
+north;west;Corridor intersection;3;4;true;false;false;41;3;false
+south;north-east;Solid door;3;9;false;true;true;42;1;9821;false
+north-west;east;Door;9;10;false;true;false;43;0;false
+south-west;east;Iron door;9;11;false;true;true;44;0;false
+south-east;west;Door;9;8;false;true;false;45;0;false
+south;north;Big door;9;12;false;true;false;46;0;false
+north;south;Fake Wall;10;17;false;true;true;47;2;false
+north;south;Glass Door;6;5;false;true;true;48;0;false
+east;north-west;Security Door;6;7;false;true;true;49;0;false
+east;south-west;Door;15;7;false;true;false;50;0;false
+south;north;Arc;15;18;true;false;false;51;3;false
+north-west;east;Door;15;8;false;true;false;52;0;false
+south-west;north-west;Door;15;14;false;true;true;53;0;false
+north-east;south;Door;13;16;false;true;false;54;0;false
+north;south;Corridor intersection;13;14;true;false;false;55;3;false
+north-west;west;Door;13;12;false;true;true;56;0;false
+east;east;Principal Door;13;82;false;true;true;83;2;true

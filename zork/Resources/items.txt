@@ -1,12 +1,39 @@
-Bed;It looks like it can be broken...;1;1;19;true;This bed is broken.;2
-Spring;It looks like it can be used to open some padlocks...;19;3;20;true;Looks like I can use it to unlock a padlock...;
-Pipe;This item can be used to attack;1;0;21;false
-Painting1;It seems that I can move this painting;3;2;22;true;Очищающее пламя - Вергвоктре \n The purifying flame - Vergvoktre
+Bed;It looks like it can be broken...;1;1;19;true;The structure of this bed is very rusty, if I break it maybe I can get a spring to open the padlock of the chain...;2
+Spring;It looks like it can be used to open some padlocks...;19;0;20;true;Looks like I can use it to unlock a padlock...;false
+Pipe;This item can be used to attack;1;4;21;true;I can use it as a wapon...;2;4
+Painting1;It seems that I can move this painting;3;2;22;true;Очищающее пламя - Вергвоктре|The purifying flame - Vergvoktre
 Painting2;It seems that I can move this painting;3;2;23;true;Untitled 1984 - Zdzisław Beksiński
-Painting1;It seems that I can move this painting;4;2;24;true;Владимир Чебаков - Бесконечное утро \n Vladimir Chebakov - Endless Morning
-Painting2;It seems that I can move this painting;4;2;25;true;Dos viejos comiendo sopa - Francisco de Goya \n Two old ones eating soup - Francisco de Goya;
-Window;The window is covered with bars and it seems impossible to get out. \n You notice you're in the middle of nowhere, in some lost forest in Russia...;4;0;26;false
-Blackboard;There's some kind of writing in cyrillic on it...;5;0;27;true;Так как вы совсем идиоты, я оставляю пароль написанным: 9821
-Desktop;It looks like I need a key to open the drawer...;5;0;28;false
-Table;It's a pretty old table, looks expensive.;15;0;29;false
-Padlock;It looks you need something to unlock;0;6;30;false;"";20
+Painting1;It seems that I can move this painting;4;2;24;true;Владимир Чебаков - Бесконечное утро|Vladimir Chebakov - Endless Morning
+Painting2;It seems that I can move this painting;4;2;25;true;Dos viejos comiendo sopa - Francisco de Goya|Two old ones eating soup - Francisco de Goya;
+Window;The window is covered with bars and it seems impossible to get out.|You notice you're in the middle of nowhere, in some lost forest in Russia...;4;7;26;false
+Blackboard;There's some kind of writing in cyrillic on it...;5;7;27;true;Так как вы совсем идиоты, я оставляю пароль написанным: 9821;false
+Table;It's a pretty old table, looks expensive.;15;7;29;false
+Padlock;It looks you need something to unlock it;1;6;30;false;"";20
+Wallhole;It looks you can interact with them...;24;8;31;true;It seems I can see something through this hole...;27
+Bust1;It looks you can use it to break something...;10;9;32;true;It's a bust of Lenin, it looks old.;10
+Bust2;It looks you can use it to break something...;10;9;33;true;It's a bust of Stalin, it looks old.;10
+Showcase1;It looks you can break it with something;17;1;34;true;There's a katana inside this case, if I had something to take it...;10
+Showcase2;It looks you can break it with something;17;1;35;true;There's a machete inside this case, if I had something to take it...;10
+Katana;This item can be used as a weapon;34;4;36;true;I've never seen a Katana like this, you can tell it's high quality. It's very sharp. There's an inscription:| |戦士の道を辿れ;12;15
+Machete;This item can be used as a weapon;35;4;37;true;It looks very old, although it has some rust that seems to be well preserved. There's an inscription:| |"Emiliano Zapata, 1910. ¡Viva México libre!";8;11
+GrandfatherClock;It looks you can interact with them...;8;3;38;true;This high-case clock seems to have some kind of strange mechanism. What will happen if I move the hands...?;47;false
+Extinguisher;It looks you can extinguish some fires...;18;0;57;true;I can use this extinguisher in the fireplace.;false
+Fireplace;It looks you can interact with them...;9;3;58;true;There's a lever at the bottom of the fireplace, I suppose it opens some mechanism.;44;true;57
+OfficeKey;It looks you can use it to open the Boss office;63;0;64;true;With this I can open the office of the Mafia boss.;true;48
+MasterKey;It looks you can use it to open the Staff Room;59;0;65;true;With this I can open the staff room.;true;49;53
+BladeKnife;This item can be used to attack;66;4;67;true;This military knife is very dangerous.;9;10
+SecurityCard;It looks you can use it to open the Security Room;66;0;68;true;With this Security Card I'll enter to Security Room to open the Final Exit;true;54
+Knife;This item can be used to attack;29;4;69;true;This knive is covered with blood;4;6
+Apple;This item can be used to heal you;29;10;70;true;It doesn't look very tasty but at least it will help me get back to some health...;2;4
+Medkit;This item can be used to heal you;18;10;71;true;With this first aid kit I can heal my wounds...;5;10
+Desktop;It looks like you need a key to open the drawer...;5;11;28;false;"";0;65
+PieceOfPaper;It seems to have something written ...;28;0;72;true;Locker password: 10121996;false
+Safe;It looks like you need a code to open the safe...;5;11;73;true;What will be in this safe?|There is only one way to know;1;10121996
+BulletproofVest;It looks like you can use it as an armour;73;5;74;false;"";8;10
+FirstAidLocker;Inside can be something to heal you;5;7;75;false
+Bandage1;This item can be used to heal you;75;10;76;true;With this bandage kit I can heal my wounds...;6;10
+Bandage2;This item can be used to heal you;75;10;77;true;With this first aid kit I can heal my wounds...;6;10
+Morphine;This item can be used to heal you;75;10;78;true;With this morphine I can reduce the pain...;10;15
+AK47;This item can be used to attack;73;4;79;true;An AK47, perhaps the best assault rifle ever made...;20;25
+Glock;This item can be used to attack;80;4;81;true;A Glock 9mm;10;15
+Computer;It looks you can interact with them...;16;3;84;true;This computer is older than me, and I'm 24...;83;false

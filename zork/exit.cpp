@@ -3,9 +3,9 @@
 #include "Exit.h"
 
 // ----------------------------------------------------
-Exit::Exit(const std::string& name, const std::string& opposite_name, const std::string& description, Room* origin, Room* destination, int id, bool one_way) :
+Exit::Exit(const std::string& name, const std::string& opposite_name, const std::string& description, Room* origin, Room* destination, int id, ExitType _type, bool one_way) :
 	Entity(name, description, "", id, (Entity*)origin),
-	closed(false), locked(false), key(NULL), one_way(one_way), destination(destination), opposite_name(opposite_name)
+	closed(false), locked(false), key(NULL), one_way(one_way), destination(destination), opposite_name(opposite_name), exit_type(_type)
 {
 	type = EXIT;
 

@@ -26,8 +26,8 @@ void Player::Look(const std::vector<std::string>& args) const
 		{
 			if (Same(it->name, args[1]) || (it->type == EXIT && Same(args[1], ((Exit*) it)->GetNameFrom((Room*)parent))))
 			{
-				it->Look();
-				return;
+					it->Look();
+					return;
 			}
 		}
 
@@ -45,6 +45,12 @@ void Player::Look(const std::vector<std::string>& args) const
 
 // ----------------------------------------------------
 bool Player::Go(const std::vector<std::string>& args, bool &change_room) {
+	
+	if (!IsAlive()) {
+		std::cout << "\nYou're death\n";
+		return true;
+	}
+	
 	Exit* exit = GetRoom()->GetExit(args[1]);
 
 	if (this->immobilezed) {
@@ -63,7 +69,7 @@ bool Player::Go(const std::vector<std::string>& args, bool &change_room) {
 	}
 
 	if (exit->closed) {
-		std::cout << "\nThet exit is closed.\n";
+		std::cout << "\nThat exit is closed.\n";
 		return false;
 	}
 
@@ -72,6 +78,22 @@ bool Player::Go(const std::vector<std::string>& args, bool &change_room) {
 	std::cout << "\nYou take direction " << exit->GetNameFrom((Room*)parent) << "...\n";
 	ChangeParentTo(exit->GetDestinationFrom((Room*)parent));
 	parent->Look();
+
+	std::vector<Entity *> ofenssive_creatures;
+	
+	parent->FindAll(CREATURE, ofenssive_creatures);
+
+	for (auto it : ofenssive_creatures) {
+		Creature *creature = (Creature *)it;
+		if (creature->IsAlive()) {
+			if (creature->creature_type == OFENSSIVE) {
+				creature->combat_target = this;
+				creature->AutoEquip();
+			}
+		}
+	}
+	
+	if (Same(exit->name, "Yard")) exited = true;
 
 	return true;
 }
@@ -114,8 +136,7 @@ bool Player::Pick(const std::vector<std::string>& args)
 			std::cout << "\nThere is no item here with that name.\n";
 			return false;
 		}
-
-		else if (item->item_type == BREAKABLE || item->item_type == DECORATIVE) {
+		else if (item->item_type == BREAKABLE || item->item_type == DECORATIVE || item->item_type == INVISIBLE || item->item_type == SPYHOLE || item->item_type == STATIC || item->item_type == UNLOCKER || item->item_type == LOCKER) {
 			std::cout << "\nThis is item cannot be taken.\n";
 			return false;
 		}
@@ -275,7 +296,6 @@ bool Player::Examine_creature(const std::vector<std::string> &args) {
 
 bool Player::Examine_item(const std::vector<std::string> &args) {
 	
-	//inventory
 	Item *item = (Item *) Find(args[1], ITEM);
 
 	if (item == NULL) {
@@ -284,13 +304,15 @@ bool Player::Examine_item(const std::vector<std::string> &args) {
 
 		if (item == NULL) {
 			std::cout << "\nCannot find '" << args[1] << "', is not in your inventory or room.\n";
+			return false;
 		}
-		else {
-			item->Examine();
-		}
-
-		return false;
+		
+		item->Examine();
+		return true;
 	}
+
+	item->Examine();
+	return true;
 }
 
 // ----------------------------------------------------
@@ -298,10 +320,14 @@ bool Player::Examine(const std::vector<std::string>& args) {
 
 	EntityType type = FindType(args[1]);
 
+	type = (type == ENTITY) ? parent->FindType(args[1]) : type;
+
 	switch (type)
 	{
 		case CREATURE:
 			return Examine_creature(args);
+		case ITEM:
+			return Examine_item(args);
 		default:
 			break;
 	}
@@ -403,7 +429,7 @@ bool Player::Lock(const std::vector<std::string>& args)
 
 bool Player::Unlock_item(const std::vector<std::string> &args) {
 
-	Item *item_locked = (Item *)Find(args[1], ITEM);
+	Item *item_locked = (Item *)parent->Find(args[1], ITEM);
 
 	if (item_locked == NULL) {
 		std::cout << "\nThe item locked not exists.\n";
@@ -422,8 +448,16 @@ bool Player::Unlock_item(const std::vector<std::string> &args) {
 		return false;
 	}
 
-	if (item_locked->key->id != item_unlocker->id) {
-		std::cout << item_unlocker->name << " is not the key for " << item_locked->name << ".\n";
+	if (item_locked->interactor == NULL) {
+		if (Same(item_locked->code, args[3])) std::cout << "\nCode correct!\n";
+		else {
+			std::cout << "\nCode correct!\nTry again\n";
+			return true;
+		}
+	}
+	else if ((item_locked->interactor)->id != item_unlocker->id) {
+		std::cout << "\n" << item_locked->interactor->name << std::endl;
+		std::cout << "\n" << item_unlocker->name << " is not the key for " << item_locked->name << ".\n";
 		return false;
 	}
 
@@ -436,23 +470,9 @@ bool Player::Unlock_item(const std::vector<std::string> &args) {
 
 }
 
-bool Player::Unlock_exit(const std::vector<std::string>& args) {
-
-	Exit* exit = GetRoom()->GetExit(args[1]);
-
-	if (exit == NULL)
-	{
-		std::cout << "\nThere is no exit at '" << args[1] << "'.\n";
-		return false;
-	}
-
-	if (exit->locked == false)
-	{
-		std::cout << "\nThat exit is not locked.\n";
-		return false;
-	}
-
-	Item* item = (Item*)Find(args[3], ITEM);
+bool Player::Unlock_with_key(Exit *exit, const std::vector<std::string> &args) {
+	
+	Item* item = (Item* )Find(args[3], ITEM);
 
 	if (item == NULL)
 	{
@@ -471,6 +491,52 @@ bool Player::Unlock_exit(const std::vector<std::string>& args) {
 	exit->locked = false;
 
 	return true;
+}
+
+bool Player::Unlock_with_code(Exit *exit, const std::vector<std::string> &args) {
+
+	if (Same(exit->code, args[3])) {
+		std::cout << "\nCode correct!\nYou unlock " << exit->GetNameFrom((Room*)parent) << "...\n";
+
+		exit->locked = false;
+
+		return true;
+	}
+
+	std::cout << "\nCode incorrect!\nTry again\n";
+
+	return false;
+}
+
+bool Player::Unlock_exit(const std::vector<std::string>& args) {
+
+	Exit* exit = GetRoom()->GetExit(args[1]);
+
+	if (exit == NULL)
+	{
+		std::cout << "\nThere is no exit at '" << args[1] << "'.\n";
+		return false;
+	}
+
+	if (exit->locked == false)
+	{
+		std::cout << "\nThat exit is not locked.\n";
+		return false;
+	}
+
+	switch (exit->exit_type)
+	{
+		case KEY:
+			return Unlock_with_key(exit, args);
+		case CODE:
+			return Unlock_with_code(exit, args);
+		case MECHANISM:
+			std::cout << "\nThis door is unlocked by a mechanism.\n";
+			return true;
+		default:
+			return false;
+			break;
+	}
 
 }
 
@@ -482,13 +548,20 @@ bool Player::UnLock(const std::vector<std::string>& args)
 
 	EntityType type = FindType(args[1]);
 
+	std::cout << "Type of " << args[1] << ": " << type << "\n";
+
+	if (type == ENTITY) type = parent->FindType(args[1]);
+
+	std::cout << "Type of " << args[1] << ": " << type << "\n";
+
 	switch (type) {
 	case ITEM:
 		return Unlock_item(args);
 	case EXIT:
 		return Unlock_exit(args);
 	default:
-		return false;
+		std::cout << "Item or Exit not found.\n";
+		return true;
 	}
 
 	return false;
@@ -585,7 +658,7 @@ bool Player::Close(const std::vector<std::string>& args) {
 void Player::hit(Item *item) {
 
 	if (item->min_value <= 0) {
-		std::cout << "\nThe item is already broken.\n";
+		std::cout << "\nThe " << item->name << " is already broken.\n";
 		return;
 	}
 
@@ -593,12 +666,13 @@ void Player::hit(Item *item) {
 	item->min_value -= max_damage;
 
 	if (item->min_value <= 0) {
-		std::cout << "You broke the " << item->name << ".\n";
+		std::cout << "You broke the " << item->name << " and drops...\n";
 		std::vector<Entity *> items;
 		item->FindAllByParent(item->id, items);
-		Room *room = this->GetRoom();
+		Room *room = GetRoom();
 
 		for (auto it : items) {
+			std::cout << it->name << std::endl;
 			Item *subitem = (Item *) it;
 			subitem->ChangeParentTo(room);
 		}
@@ -609,34 +683,175 @@ void Player::hit(Item *item) {
 	}
 }
 
+void Player::move(Item *item) {
+	
+	if (!item->moved) {
+		std::cout << "\nYou move the " << item->name;
+		item->moved = true;
+
+		std::vector<Entity *> items;
+		item->FindAllByParent(item->id, items);
+
+		if (items.size() > 0) std::cout << " and you realize there's something behind it...\n";
+		else std::cout << "\n";
+
+		Room *room = GetRoom();
+
+		for (auto it : items) {
+			std::cout << it->name << std::endl;
+			Item *subitem = (Item *)it;
+			subitem->ChangeParentTo(room);
+		}
+
+	}
+	else {
+		std::cout << "\n" << item->name << " is already moved.\n";
+	}
+}
+
+bool Player::intUnlocker(Item *item) {
+	
+	//if mechanism is obstructed, try to unlock
+	if (item->obstructed) {
+
+		Item *subitem = (Item *) Find(item->interactor->name, ITEM);
+
+		if (subitem == NULL) {
+			std::cout << "\nThe " << item->interactor->name << " needed to unlock the mechanism is not in your inventory.\n";
+			return false;
+		}
+
+		item->obstructed = false;
+		std::cout << "You've unlocked the mechanism\n";
+	}
+	else if(!item->obstructed && !item->exit->locked){
+		std::cout << "\nThe mechanism is already unlocked\n";
+		return true;
+	}
+
+	std::cout << "\n* faraway noise * It seems the mechanism of " << item->name << " has worked, some door has opened...\n";
+	item->exit->locked = false;
+	item->exit->closed = false;
+
+	return true;
+}
+
+bool Player::Heal(Item *item) {
+
+	std::cout << "\nItem: " << item->name << " value: " << item->min_value << " " << item->max_value << std::endl;
+
+	int result = Roll(item->min_value, item->max_value);
+
+	this->hit_points += result;
+
+	std::cout << "\nYou You've healed " << result << " points of life.\n";
+
+	item->ChangeParentTo(NULL);
+
+	this->Stats();
+
+	return true;
+
+}
+
 bool Player::Interact(const std::vector<std::string>& args) {
 
 	if (args.size() == 2) {
 		Item* item = (Item*) parent->Find(args[1], ITEM);
 
 		if (item == NULL) {
-			std::cout << "\nThere is no item here with that name.\n";
+
+			item = (Item *) Find(args[1], ITEM);
+
+			if (item == NULL) {
+				std::cout << "\nThere is no item here with that name in your inventory or in this room.\n";
+				return false;
+			}
+			
+		}
+		else if (item->type == HEALER) {
+			std::cout << "\nThere is no item here with that name in your inventory.\n";
 			return false;
 		}
 
+
 		switch (item->item_type)
 		{
-		case BREAKABLE: {
-			hit(item);
-			return true;
-		}
-		case DECORATIVE: {
-			//"move" item to 
-			break;
-		}
-		default: {
-			std::cout << "\nYou can't interact with this item.\n";
-			return true;
-		}
+			case BREAKABLE: {
+				hit(item);
+				return true;
+			}
+			case DECORATIVE: {
+				move(item);
+				return true;
+				break;
+			}
+			case SPYHOLE:
+				std::cout << "I can see something through " << item->name;
+				item->interactor->Examine();
+				return true;
+				break;
+			case UNLOCKER:
+				return intUnlocker(item);
+				break;
+			case HEALER:
+				return Heal(item);
+				break;
+			default: {
+				std::cout << "\nYou can't interact with this item.\n";
+				return true;
+			}
 		}
 
 	}
 
 	return false;
 
+}
+
+bool Player::Throw(const std::vector<std::string>& args) {
+
+	Item *item = (Item *)Find(args[1], ITEM);
+
+	if (item == NULL) {
+		std::cout << "\nItem '" << args[1] << "' not found in your inventory.\n";
+		return false;
+	}
+
+	Item *target = (Item *) parent->Find(args[3], ITEM);
+
+	if (target == NULL) {
+		std::cout << "\nItem '" << args[3] << "' not found in this room.\n";
+		return false;
+	}
+
+	if (target->min_value <= 0) {
+		std::cout << "\nThis item is already broken.\n";
+		return false;
+	}
+
+	target->min_value -= item->min_value;
+
+	if (target->min_value <= 0) {
+		std::cout << "\nYou broke " << target->name;
+
+		std::vector<Entity *> items;
+		target->FindAllByParent(target->id, items);
+		Room *room = GetRoom();
+
+		//the item thrown now is in the room
+		item->ChangeParentTo(room);
+		
+		if (items.size() > 0) std::cout << " and drops:\n";
+		else std::cout << "\n";
+
+		for (auto it : items) {
+			std::cout << it->name << std::endl;
+			Item *subitem = (Item *)it;
+			subitem->ChangeParentTo(room);
+		}
+
+	}
+
+	return true;
 }

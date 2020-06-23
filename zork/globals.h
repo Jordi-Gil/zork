@@ -9,5 +9,6 @@ bool Same(const char* a, const std::string& b);
 bool Same(const std::string& a, const char* b);
 int Roll(int min, int max);
 void Tokenize(const std::string& line, std::vector<std::string>& arguments);
+void split(const std::string &line, std::vector<std::string>& parameters, const std::string delimeter);
 
 #endif //__Globals__

@@ -10,10 +10,10 @@
 #include <fcntl.h>
 #include <io.h>
 
+#include <algorithm>
+
 #include "globals.h"
 #include "world.h"
-
-using namespace std;
 
 #define BACKSPACE "\033[D\033[K"
 
@@ -23,9 +23,7 @@ using namespace std;
 
 void changeTitleCMD(const std::string &newTitle) {
 
-
-
-	char *data = new char[newTitle.size() + 1];
+	char data[4000];
 
 	std::copy(newTitle.begin(), newTitle.end(), data);
 	data[newTitle.size()] = '\0';
@@ -56,15 +54,20 @@ void changeTitleCMD(const std::string &newTitle) {
 int main()
 {
 
+	//Enable UTF-8 codification
+	SetConsoleOutputCP(CP_UTF8);
+
 	std::string title = "Russian Nightmare";
 	changeTitleCMD(title);
 
 	char key;
-	string player_input;
-	std::vector<string> args;
+	std::string player_input;
+	std::vector<std::string> args;
 	std::string player_name = "Hero";
 	std::string description = "You are an awesome adventurer!";
 	bool defConfig = false;
+	bool playerDead = false;
+	bool playerExited = false;
 
 	args.reserve(10);
 
@@ -87,16 +90,16 @@ int main()
 				if (player_input.length() > 0)
 				{
 					player_input.pop_back();
-					//cout << BACKSPACE;
-					cout << '\b';
-					cout << " ";
-					cout << '\b';
+					//std::cout << BACKSPACE;
+					std::cout << '\b';
+					std::cout << " ";
+					std::cout << '\b';
 				}
 			}
 			else if (key != '\r') // return
 			{
 				player_input += key;
-				cout << key;
+				std::cout << key;
 			}
 			else
 				Tokenize(player_input, args);
@@ -105,8 +108,18 @@ int main()
 		if (args.size() > 0 && Same(args[0], "quit"))
 			break;
 
-		if (my_world.Tick(args, change_room) == false)
-			cout << "\nSorry, I do not understand your command.\n";
+		if (my_world.Tick(args, change_room, playerDead, playerExited) == false) {
+			std::cout << "\nSorry, I do not understand your command.\n";
+		}
+
+		if (playerDead) {
+			std::cout << "\nYou lose\n";
+			break;
+		}
+
+		if (playerExited) {
+			std::cout << "\nYou win\n";
+		}
 
 		if (change_room) {
 			changeTitleCMD(my_world.takeActualRoomName());
@@ -117,10 +130,10 @@ int main()
 		{
 			args.clear();
 			player_input = "";
-			cout << "> ";
+			std::cout << "> ";
 		}
 	}
 
-	cout << "\nThanks for playing, Bye!\n";
+	std::cout << "\nThanks for playing, Bye!\n";
 	return 0;
 }

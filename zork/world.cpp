@@ -15,47 +15,6 @@
 #include "player.h"
 #include "world.h"
 
-
-void split(std::string &line, std::vector<std::string>& parameters) {
-
-	std::string delimeter = ";";
-
-	int pos = 0;
-	std::string token;
-
-	while ((pos = line.find(delimeter)) != std::string::npos) {
-		token = line.substr(0, pos);
-		line.erase(0, pos + delimeter.length());
-		parameters.push_back(token);
-	}
-
-	parameters.push_back(line);
-
-}
-
-void debug(const std::vector<Entity*> &entities) {
-
-
-	std::cout << "DEBUG" << std::endl;
-
-
-	for (auto it : entities)
-	{
-
-		SetConsoleOutputCP(CP_UTF8);
-
-		if (it->type == ITEM) {
-			Item *item = (Item *) it;
-			printf(u8"%s\n", (item->deep_description).c_str());
-		}
-
-		if (it->type == PLAYER) {
-			Player *player = (Player *) it;
-			std::cout << player->name << " " << player->little_description << std::endl;
-		}
-	}
-}
-
 Entity *findEntity(const std::vector<Entity *> &entities, int id) {
 
 	for (auto it : entities) {
@@ -80,18 +39,15 @@ World::World(const std::string namePlayer, const std::string descriptionPlayer)
 	Room *spawnRoom = (Room *)findEntity(entities, 1);
 
 	player = new Player(namePlayer.c_str(), descriptionPlayer.c_str(), spawnRoom, 0);
-	player->hit_points = 25;
+	player->hit_points = 30;
 	player->max_damage = 1;
 	player->immobilezed = true;
 	entities.push_back(player);
 
+	loadCreatures("Resources/creatures.txt");
 	loadExits("Resources/exits.txt");
 	loadItems("Resources/items.txt");
-
-
-
-	//debug(entities);
-
+	
 }
 
 // ----------------------------------------------------
@@ -104,12 +60,24 @@ World::~World()
 }
 
 // ----------------------------------------------------
-bool World::Tick(std::vector<std::string>& args, bool &change_room)
+bool World::Tick(std::vector<std::string>& args, bool &change_room, bool &playerDead, bool &playerExited)
 {
+
+	if (!player->IsAlive()) {
+		playerDead = true;
+		return false;
+	}
+
+	if (player->exited) {
+		playerExited = true;
+		return false;
+	}
+
 	bool ret = true;
 
 	if (args.size() > 0 && args[0].length() > 0)
 		ret = ParseCommand(args, change_room);
+	else if (args.size() > 0 && args[0].length() <= 0) ret = false;
 
 	GameLoop();
 
@@ -252,6 +220,9 @@ bool World::ParseCommand(std::vector<std::string>& args, bool &change_room)
 		else if (Same(args[0], "drop") || Same(args[0], "put")) {
 			player->Drop(args);
 		}
+		else if (Same(args[0], "throw")) {
+			player->Throw(args);
+		}
 		else
 			ret = false;
 		break;
@@ -280,7 +251,7 @@ void World::loadRooms(const std::string &fileName) {
 
 		std::vector<std::string> parameters;
 
-		split(line, parameters);
+		split(line, parameters,";");
 
 		Room* room = new Room(parameters[0].c_str(), parameters[1].c_str(), parameters[2].c_str(), stoi(parameters[3]));
 
@@ -307,14 +278,14 @@ void World::loadExits(const std::string &fileName) {
 
 		std::vector<std::string> parameters;
 
-		split(line, parameters);
+		split(line, parameters, ";");
 
 		Room *origin, *destination;
 
 		origin = (Room *)findEntity(entities, std::stoi(parameters[3]));
 		destination = (Room *)findEntity(entities, std::stoi(parameters[4]));
 
-		Exit* exit = new Exit(parameters[0].c_str(), parameters[1].c_str(), parameters[2].c_str(), origin, destination);
+		Exit* exit = new Exit(parameters[0].c_str(), parameters[1].c_str(), parameters[2].c_str(), origin, destination, std::stoi(parameters[8]),static_cast<ExitType>(std::stoi(parameters[9])));
 
 		exit->freeSpace = (parameters[5] == "true") ? true : false;
 		exit->closed = (parameters[6] == "true") ? true : false;
@@ -323,6 +294,21 @@ void World::loadExits(const std::string &fileName) {
 		// If the exit represents a "free space"  like a Path or Arc, then cannot be locked or closed
 		if (exit->freeSpace) {
 			exit->closed = exit->locked = false;
+		}
+
+		switch (exit->exit_type)
+		{
+			case CODE:
+				exit->code = parameters[10];
+				exit->one_way = Same(parameters[11], "true") ? true : false;
+				break;
+			case MECHANISM:
+				exit->key = (Item *) findEntity(entities, std::stoi(parameters[9]));
+				exit->one_way = Same(parameters[10], "true") ? true : false;
+				break;
+			default:
+				exit->one_way = Same(parameters[10], "true") ? true : false;
+				break;
 		}
 
 		entities.push_back(exit);
@@ -348,7 +334,7 @@ void World::loadItems(const std::string &fileName) {
 
 		std::vector<std::string> parameters;
 
-		split(line, parameters);
+		split(line, parameters, ";");
 
 		Entity *parent;
 
@@ -356,28 +342,96 @@ void World::loadItems(const std::string &fileName) {
 
 		Item* item = new Item(parameters[0].c_str(), parameters[1].c_str(), (parameters[5] == "true") ? parameters[6].c_str() : "", parent, static_cast<ItemType>(stoi(parameters[3])), std::stoi(parameters[4]));
 
-		entities.push_back(item);
+		std::cout << "Item: " << item->name << std::endl;
 
 		switch (item->item_type)
 		{
+		case COMMON:
+			if (Same(parameters[7], "true")) {
+				for (unsigned int i = 8; i < parameters.size(); i++) {
+					Exit *exit = (Exit *)findEntity(entities, std::stoi(parameters[i]));
+					std::cout << "Key: " << item->name << " for exit: " << ((exit == NULL) ? "NULL" : std::to_string(exit->id)) << std::endl;
+					exit->key = item;
+				}
+			}
+			break;
 		case BREAKABLE:
 			item->min_value = std::stoi(parameters[7]);
 			break;
 		case ARMOUR:
 			item->min_value = std::stoi(parameters[7]);
 			item->max_value = std::stoi(parameters[8]);
+			break;
 		case WEAPON:
 			item->min_value = std::stoi(parameters[7]);
 			item->max_value = std::stoi(parameters[8]);
+			break;
 		case INVISIBLE:
-			item->key = (Item *)findEntity(entities, std::stoi(parameters[7]));
+			item->interactor = (Item *)findEntity(entities, std::stoi(parameters[7]));
 			item->locked = true;
+			break;
+		case SPYHOLE:
+			item->interactor = (Item *)findEntity(entities, std::stoi(parameters[7]));
+			break;
+		case UNLOCKER:
+			item->exit = (Exit *)findEntity(entities, std::stoi(parameters[7]));
+			item->obstructed = Same(parameters[8], "true") ? true : false;
+			if(item->obstructed) item->interactor = (Item *)findEntity(entities, std::stoi(parameters[9]));
+			break;
+		case THROWABLE:
+			item->min_value = std::stoi(parameters[7]);
+			break;
+		case HEALER:
+			item->min_value = std::stoi(parameters[7]);
+			item->max_value = std::stoi(parameters[8]);
+			break;
+		case LOCKER:
+			if (std::stoi(parameters[7])) item->code = parameters[8];
+			else item->interactor = (Item *)findEntity(entities, std::stoi(parameters[8]));
+			item->locked;
+			break;
 		default:
 			break;
 		}
 
+		entities.push_back(item);
+
 	}
 
+}
+
+void World::loadCreatures(const std::string &fileName) {
+
+	std::ifstream raw;
+	std::string line;
+	std::stringstream sstream;
+
+	raw.open(fileName.c_str());
+
+	if (!raw.is_open()) {
+		std::cout << "File items not found" << std::endl;
+		exit(99);
+	}
+
+	while (getline(raw, line)) {
+
+		std::vector<std::string> parameters;
+
+		split(line, parameters, ";");
+
+		Room *parent;
+
+		parent = (Room *) findEntity(entities, std::stoi(parameters[2]));
+
+		Creature* creature = new Creature(parameters[0], parameters[1], parent, std::stoi(parameters[3]), static_cast<CreatureType>(stoi(parameters[4])));
+
+		creature->hit_points = std::stoi(parameters[5]);
+		creature->min_damage = std::stoi(parameters[6]);
+		creature->max_damage = std::stoi(parameters[7]);
+
+		entities.push_back(creature);
+
+	}
 }
 
 std::string World::takeActualRoomName() {

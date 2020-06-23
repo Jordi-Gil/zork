@@ -1,18 +1,19 @@
-Grimy Room (Spawn);Lore Ipsum;Lore Ipsum;1
-Corridor;Lore Ipsum;Lore Ipsum;2
-Central Corridor North;Lore Ipsum;Lore Ipsum;3
-North Corridor;Lore Ipsum;Lore Ipsum;4
-Office;Lore Ipsum;Lore Ipsum;5
-Staff Room;Lore Ipsum;Lore Ipsum;6
-East Wing;Lore Ipsum;Lore Ipsum;7
-Clock Corridor;Lore Ipsum;Lore Ipsum;8
-Living Room;Lore Ipsum;Lore Ipsum;9
-West Wing;Lore Ipsum;Lore Ipsum;10
-Bathroom (Morgue);Lore Ipsum;Lore Ipsum;11
-Guest Room;Lore Ipsum;Lore Ipsum;12
-Main Corridor;Lore Ipsum;Lore Ipsum;13
-Central Corridor South;Lore Ipsum;Lore Ipsum;14
-Dinning Room;Lore Ipsum;Lore Ipsum;15
-Security Room;Lore Ipsum;Lore Ipsum;16
-Secret Room (Armory);Lore Ipsum;Lore Ipsum;17
-Kitchen;Lore Ipsum;Lorep Ipsum;18
+Grimy Room (Spawn);You walked into a stinking room;Lore Ipsum;1
+Corridor;You have entered a dark corridor;Lore Ipsum;2
+Central Corridor North;You've entered a dark corridor with pictures;Lore Ipsum;3
+North Corridor;You've entered a dark corridor with pictures;Lore Ipsum;4
+Office;You broke into the boss's office.;Lore Ipsum;5
+Staff Room;You broke into the staff room.;Lore Ipsum;6
+East Wing;You've entered the east wing of the mansion, there's nothing;Lore Ipsum;7
+Clock Corridor;You walked into a small hallway with a big grandfather clock.;Lore Ipsum;8
+Living Room;You have entered the living room, there is a cozy fireplace and many doors.;Lore Ipsum;9
+West Wing;You've entered the west wing of the mansion. It looks like a small museum, there are several busts of Soviet leaders.;Lore Ipsum;10
+Bathroom (Morgue);You've entered the bathroom, but it doesn't look like a bathroom, but more like a morgue.;Lore Ipsum;11
+Guest Room;You've entered the guest room.;Lore Ipsum;12
+Main Corridor;You've entered the main corridor;Lore Ipsum;13
+Central Corridor South;You've entered the central hallway on the south side of the mansion;Lore Ipsum;14
+Dinning Room;You have entered the dining room;Lore Ipsum;15
+Security Room;You have entered the security room;Lore Ipsum;16
+Secret Room (Armory);You've entered a secret room with ancient cutting weapons. They're on display in showcases.;Lore Ipsum;17
+Kitchen;You have entered the kitchen;Lore Ipsum;18
+Yard;You have exited the mansion;Lore Ipsum;82

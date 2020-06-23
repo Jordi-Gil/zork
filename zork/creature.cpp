@@ -6,9 +6,10 @@
 #include "creature.h"
 
 // ----------------------------------------------------
-Creature::Creature(const std::string& title, const std::string& description, Room* room, int id) :
+Creature::Creature(const std::string& title, const std::string& description, Room* room, int id, CreatureType _type) :
 	Entity(title, description, "", id, (Entity*)room) {
 	type = CREATURE;
+	creature_type = _type;
 	hit_points = 1;
 	min_damage = max_damage = min_protection = max_protection = 0;
 	weapon = armour = NULL;
@@ -183,10 +184,14 @@ bool Creature::AutoEquip()
 	{
 		Item* i = (Item*) it;
 
-		if (i->item_type == WEAPON)
-			weapon = i;
-		if (i->item_type == ARMOUR)
-			armour = i;
+		if (i->item_type == WEAPON) {
+			if (weapon == NULL) weapon = i;
+			else if ((weapon->max_value - weapon->min_value) < (i->max_value - i->min_value)) weapon = i;
+		}
+		if (i->item_type == ARMOUR) {
+			if (armour == NULL) weapon = i;
+			else if ((armour->max_value - armour->min_value) < (i->max_value - i->min_value)) armour = i;
+		}
 	}
 
 	return true;
@@ -305,9 +310,11 @@ bool Creature::Attack(const std::vector<std::string>& args)
 // ----------------------------------------------------
 int Creature::MakeAttack()
 {
-	if (!IsAlive() || !combat_target->IsAlive())
+	if (!IsAlive() || !combat_target->IsAlive() || combat_rounds > 15)
 	{
 		combat_target = combat_target->combat_target = NULL;
+		combat_rounds = 0;
+		std::cout << "> ";
 		return false;
 	}
 
@@ -321,6 +328,8 @@ int Creature::MakeAttack()
 	// make the attacker react and take me as a target
 	if (combat_target->combat_target == NULL)
 		combat_target->combat_target = this;
+
+	++combat_rounds;
 
 	return result;
 }

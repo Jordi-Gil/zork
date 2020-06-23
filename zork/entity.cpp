@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "Entity.h"
+#include "Exit.h"
 
 // ----------------------------------------------------
 Entity::Entity(const std::string& name, const std::string& little_description, const std::string& deep_description, int id, Entity* parent = NULL) :
@@ -98,6 +99,12 @@ EntityType Entity::FindType(const std::string &name) {
 	for (auto it : container) {
 		if (Same(it->name, name)) {
 			return it->type;
+		}
+		else {
+			Exit *exit = (Exit *)it;
+			if (exit != NULL) {
+				if (Same(exit->opposite_name, name)) return exit->type;
+			}
 		}
 	}
 	return ENTITY;

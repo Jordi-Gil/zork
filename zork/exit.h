@@ -5,10 +5,17 @@
 
 class Room;
 
+enum ExitType {
+	KEY,
+	CODE,
+	MECHANISM,
+	NONE
+};
+
 class Exit : public Entity
 {
 public:
-	Exit(const std::string& name, const std::string& opposite_name, const std::string& description, Room* origin, Room* destination, int id = -1, bool one_way = false);
+	Exit(const std::string& name, const std::string& opposite_name, const std::string& description, Room* origin, Room* destination, int id = -1, ExitType type = KEY, bool one_way = false);
 	~Exit();
 
 	void Look() const;
@@ -23,7 +30,11 @@ public:
 	bool freeSpace;
 	std::string opposite_name;
 	Room* destination;
+
 	Entity* key;
+	std::string code;
+
+	ExitType exit_type;
 };
 
 #endif

@@ -1,0 +1,7 @@
+Butler;The butler of the house, maybe he has the master key.;12;59;0;20;0;1
+Rottweiler;An agressive dog.;11;60;1;15;1;3
+Deadbody1;The dismembered body of a person;11;61;0;0;0;0
+Deadbody2;The body of a person shot dead.;11;62;0;0;0;0
+Bossbody;The body of a person.;11;63;0;0;0;0
+Hitman1;Russian Mafia hitman.;6;66;1;30;0;1
+Hitman2;Russian Mafia hitman.;16;80;1;30;0;1

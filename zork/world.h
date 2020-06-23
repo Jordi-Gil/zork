@@ -17,13 +17,14 @@ public:
 	World(const std::string namePlayer, const std::string descriptionPlayer);
 	~World();
 
-	bool Tick(std::vector<std::string>& args, bool &change_room);
+	bool Tick(std::vector<std::string>& args, bool &change_room, bool &playerDead, bool &playerExited);
 	bool ParseCommand(std::vector<std::string>& args, bool &change_room);
 	void GameLoop();
 
 	void loadRooms(const std::string &fileName);
 	void loadExits(const std::string &fileName);
 	void loadItems(const std::string &fileName);
+	void loadCreatures(const std::string &fileName);
 
 	std::string takeActualRoomName();
 

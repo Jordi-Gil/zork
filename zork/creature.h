@@ -7,10 +7,15 @@
 class Room;
 class Item;
 
+enum CreatureType {
+	PASSIVE,
+	OFENSSIVE
+};
+
 class Creature : public Entity
 {
 public:
-	Creature(const std::string& name, const std::string& description, Room* room, int id = -1);
+	Creature(const std::string& name, const std::string& description, Room* room, int id = -1, CreatureType _type = PASSIVE);
 	~Creature();
 
 	virtual bool Go(const std::vector<std::string>& args);
@@ -47,7 +52,11 @@ public:
 	Item* weapon;
 	Item* armour;
 
-	bool immobilezed;
+	CreatureType creature_type;
+
+	bool knocked;
+
+	int combat_rounds = 0;
 };
 
 #endif
