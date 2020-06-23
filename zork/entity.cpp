@@ -100,7 +100,7 @@ EntityType Entity::FindType(const std::string &name) {
 		if (Same(it->name, name)) {
 			return it->type;
 		}
-		else {
+		else if(it->type == EXIT) {
 			Exit *exit = (Exit *)it;
 			if (exit != NULL) {
 				if (Same(exit->opposite_name, name)) return exit->type;

@@ -33,7 +33,7 @@ World::World(const std::string namePlayer, const std::string descriptionPlayer)
 {
 	tick_timer = clock();
 
-	loadRooms("Resources/rooms.txt");
+	loadRooms("./Resources/rooms.txt");
 
 	// Player ----
 	Room *spawnRoom = (Room *)findEntity(entities, 1);
@@ -44,9 +44,9 @@ World::World(const std::string namePlayer, const std::string descriptionPlayer)
 	player->immobilezed = true;
 	entities.push_back(player);
 
-	loadCreatures("Resources/creatures.txt");
-	loadExits("Resources/exits.txt");
-	loadItems("Resources/items.txt");
+	loadCreatures("./Resources/creatures.txt");
+	loadExits("./Resources/exits.txt");
+	loadItems("./Resources/items.txt");
 	
 }
 
@@ -342,15 +342,12 @@ void World::loadItems(const std::string &fileName) {
 
 		Item* item = new Item(parameters[0].c_str(), parameters[1].c_str(), (parameters[5] == "true") ? parameters[6].c_str() : "", parent, static_cast<ItemType>(stoi(parameters[3])), std::stoi(parameters[4]));
 
-		std::cout << "Item: " << item->name << std::endl;
-
 		switch (item->item_type)
 		{
 		case COMMON:
 			if (Same(parameters[7], "true")) {
 				for (unsigned int i = 8; i < parameters.size(); i++) {
 					Exit *exit = (Exit *)findEntity(entities, std::stoi(parameters[i]));
-					std::cout << "Key: " << item->name << " for exit: " << ((exit == NULL) ? "NULL" : std::to_string(exit->id)) << std::endl;
 					exit->key = item;
 				}
 			}

@@ -548,11 +548,7 @@ bool Player::UnLock(const std::vector<std::string>& args)
 
 	EntityType type = FindType(args[1]);
 
-	std::cout << "Type of " << args[1] << ": " << type << "\n";
-
 	if (type == ENTITY) type = parent->FindType(args[1]);
-
-	std::cout << "Type of " << args[1] << ": " << type << "\n";
 
 	switch (type) {
 	case ITEM:

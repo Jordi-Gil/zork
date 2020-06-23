@@ -119,6 +119,7 @@ int main()
 
 		if (playerExited) {
 			std::cout << "\nYou win\n";
+			break;
 		}
 
 		if (change_room) {
