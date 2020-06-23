@@ -93,7 +93,7 @@ bool Player::Go(const std::vector<std::string>& args, bool &change_room) {
 		}
 	}
 	
-	if (Same(exit->name, "Yard")) exited = true;
+	if (Same(parent->name, "Yard")) exited = true;
 
 	return true;
 }
