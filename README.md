@@ -24,7 +24,7 @@ go south
 go east
 go north
 interact painting1
-interact painting2
+interact wallhole
 go west
 unlock south with 9821
 open south
