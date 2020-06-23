@@ -56,7 +56,7 @@ go west
 ```
 6. Since we already have the fire extinguisher, we can interact with the fireplace to open the bathroom door.
 ```
- interact fireplace
+interact fireplace
 ```
 7. Before we go to the bathroom, we'll go get a gun from the west wing.
 ```
