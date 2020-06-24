@@ -8,7 +8,7 @@ Jordi Gil Gonzalez
 # Info
 This game is a basic text adventure, it works through a console, it doesn't have any kind of graphics support. Through a series of commands you must get to the end of the game.
 # 
-You can find the code for this game here: https://github.com/Jordi-Gil/zork
+You can find the code for this game here: https://github.com/Jordi-Gil/zork/tree/master/zork
 # Guide
 1. You start out in a room and you're chained. By interacting with the bed you can end up breaking it to get a spring that will allow you to unlock the lock.
 ```
